@@ -3,7 +3,7 @@ import Navbar from './navbar';
 import SetQuestion from './SetQuestion'
 import FileUpload from './fileUpload';
 import fetchApi from '../fetch/fetch';
-import UpdateSet from './updateSet';
+import UpdateSet from './sets/updateSet';
 
 
 

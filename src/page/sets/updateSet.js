@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import fetchApi from '../fetch/fetch';
+import fetchApi from '../../fetch/fetch';
 import SelectedSet from './selectedSet';
 
 

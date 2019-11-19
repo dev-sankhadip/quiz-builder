@@ -1,17 +1,14 @@
 import React,{ useState, useRef } from 'react'
 import Question from './question';
 import fetchApi from '../fetch/fetch';
+import { fetchData } from '../fetch/newFetch'
 
 
 const SetQuestion=()=>
 {
-    const [ title, sett ]=useState('');
-    const [ m1, setm1 ]=useState('');
-    const [ m2, setm2 ]=useState('');
-    const [ m3, setm3 ]=useState('');
-    const [ m4, setm4 ]=useState('');
+    const [ title, setTitle ]=useState('');
+    const [ option, setOption ]=useState({ op1:'', op2:'', op3:'', op4:'' });
     const [ right, setRight ]=useState('');
-    const [ question, setQuestion ]=useState([]);
     const [ isDisplay, setDisplay ]=useState(false);
     const [setName, setSetName]=useState('');
     let radio1=useRef();
@@ -19,27 +16,27 @@ const SetQuestion=()=>
     let radio3=useRef();
     let radio4=useRef();
 
-    const setTitle=(e)=>
+    const updateTitle=(e)=>
     {
-        sett(e.target.value);
+        setTitle(e.target.value);
     }
 
     const setOp1=(e)=>
     {
-        setm1(e.target.value);
+        setOption({ ...option, op1:e.target.value });
     }
 
     const setOp2=(e)=>
     {
-        setm2(e.target.value);
+        setOption({ ...option, op2:e.target.value });
     }
     const setOp3=(e)=>
     {
-        setm3(e.target.value);
+        setOption({ ...option, op3:e.target.value });
     }
     const setOp4=(e)=>
     {
-        setm4(e.target.value);
+        setOption({ ...option, op4:e.target.value });
     }
     const setRadio=(e)=>
     {
@@ -47,49 +44,26 @@ const SetQuestion=()=>
     }
     const upload=()=>
     {
-        const questionsSet=new Object();
-        questionsSet.title=title;
-        questionsSet.m1=m1;
-        questionsSet.m2=m2;
-        questionsSet.m3=m3;
-        questionsSet.m4=m4;
-        questionsSet.right=right;
-        const token=window.localStorage.getItem("token");
         const setno=window.localStorage.getItem("setno");
-        fetch('http://localhost:3001/quiz/set',{
+        const url=`http://localhost:3001/quiz/set`;
+        const options={
             method:"POST",
             headers:{
                 'Content-Type':'application/json',
-                Accept:'application/json',
-                'x-access-token':token
+                Accept:'application/json'
             },
-            body:JSON.stringify({ questionsSet, setno })
-        })
+            body:JSON.stringify({title, option,setno, right })
+        }
+        fetchData(url, options)
         .then((res)=>
         {
-            return res.json();
-        })
-        .then((res)=>
-        {
-            console.log(res);
-            if(res.code===200)
-            {
-                setQuestion(question=>[...question, questionsSet]);
-                radio1.current.checked=false;
-                radio2.current.checked=false;
-                radio3.current.checked=false;
-                radio4.current.checked=false;
-                sett('');
-                setm1('');
-                setm2('');
-                setm3('');
-                setm4('');
-                setRight('');
-            }
-            else if(res.code===500)
-            {
-                console.log("Internal error");
-            }
+            radio1.current.checked=false;
+            radio2.current.checked=false;
+            radio3.current.checked=false;
+            radio4.current.checked=false;
+            setTitle('');
+            setRight('');
+            setOption({ op1:'', op2:'', op3:'', op4:''});
         })
         .catch((err)=>
         {
@@ -99,7 +73,14 @@ const SetQuestion=()=>
     const getResponse=(data)=>
     {
         window.localStorage.setItem("setno", setName);
-        setDisplay(true);
+        if(data.code===409)
+        {
+            alert('set already exits');
+        }
+        else
+        {
+            setDisplay(true);
+        }
     }
     const updateSetname=(e)=>
     {
@@ -134,46 +115,43 @@ const SetQuestion=()=>
                         </div>
                         <button onClick={submitSetName} className="btn btn-sm btn-danger">Create Set</button>
                     </div>
-                    <div className="col-md-6" style={{ display: isDisplay ? 'inline' : 'none'}}>
+                    <div className="col-md-12" style={{ display: isDisplay ? 'inline' : 'none'}}>
                         <p>Set Questins Here</p>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="basic-addon1">Title</span>
                             </div>
-                            <input onChange={setTitle} type="text" className="form-control" placeholder="Write Questions Here"/>
+                            <input onChange={updateTitle} type="text" className="form-control" placeholder="Write Questions Here"/>
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="basic-addon1">Point 1</span>
                             </div>
                             <input onChange={setOp1} type="text" className="form-control" placeholder="Point 1" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio1} type="radio" className="mt-2 ml-2" value={m1} onChange={ setRadio }/>
+                            <input ref={radio1} type="radio" className="mt-2 ml-2" value={option.op1} onChange={ setRadio }/>
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="basic-addon1">Point 2</span>
                             </div>
                             <input onChange={setOp2} type="text" className="form-control" placeholder="Point 2" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio2} type="radio" className="mt-2 ml-2" value={m2} onChange={ setRadio }/>
+                            <input ref={radio2} type="radio" className="mt-2 ml-2" value={option.op2} onChange={ setRadio }/>
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="basic-addon1">Point 3</span>
                             </div>
                             <input onChange={setOp3} type="text" className="form-control" placeholder="Point 3" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio3} type="radio" className="mt-2 ml-2" value={m3} onChange={ setRadio }/>
+                            <input ref={radio3} type="radio" className="mt-2 ml-2" value={option.op3} onChange={ setRadio }/>
                         </div>
                         <div className="input-group mb-3">
                             <div className="input-group-prepend">
                                 <span className="input-group-text" id="basic-addon1">Point 4</span>
                             </div>
                             <input onChange={setOp4} type="text" className="form-control" placeholder="Point 4" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio4} type="radio" className="mt-2 ml-2" value={m4} onChange={ setRadio }/>
+                            <input ref={radio4} type="radio" className="mt-2 ml-2" value={option.op4} onChange={ setRadio }/>
                         </div>
                         <button className="btn btn-sm btn-primary" onClick={upload}>SET</button>
-                    </div>
-                    <div className="col-md-6" style={{ display: isDisplay ? 'inline' : 'none' }}>
-                        <Question  question={question} />
                     </div>
                 </div>
             </div>

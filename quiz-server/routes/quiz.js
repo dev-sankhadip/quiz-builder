@@ -11,10 +11,11 @@ quizController.use(fileUpload());
 
 quizController.post('/set',checkToken, function(request, response)
 {
-    const { title, m1, m2, m3, m4,right }=request.body.questionsSet;
-    const { setno }=request.body;
+    console.log(request.body);
+    const {title, option, setno, right }=request.body;
+    const { op1, op2, op3, op4 }=option;
     var setQuestionQuery=`insert into ${setno}(title, p1, p2, p3, p4, r) values(?,?,?,?,?,?)`;
-    connection.query(setQuestionQuery,[title, m1, m2, m3, m4, right], function(err, result)
+    connection.query(setQuestionQuery,[title, op1, op2, op3, op4, right], function(err, result)
     {
         if(err)
         {
@@ -23,7 +24,7 @@ quizController.post('/set',checkToken, function(request, response)
         }
         else
         {
-            response.status(200).send({ code:200, message:"Data Inserted" });      
+            response.status(201).send({ code:200, message:"Data Inserted" });      
         }
     })
 })
@@ -67,7 +68,7 @@ quizController.post('/upload', checkToken, function(request, response)
         })
         .then(()=>
         {
-            response.send({ code:200 })
+            response.status(200).send({ code:200 })
         })
 	})
 })
