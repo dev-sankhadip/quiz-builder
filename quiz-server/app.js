@@ -13,6 +13,13 @@ app.use(express.urlencoded({ extended:true }));
 app.use(cors());
 app.use(express.static('data'));
 app.use(logger('dev'));
+app.use((request, response, next)=>{
+    if(request.method==="OPTIONS"){
+        next();
+    }
+    next();
+})
+
 
 
 app.use('/user', userController);

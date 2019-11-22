@@ -32,18 +32,21 @@ quizController.post('/set',checkToken, function(request, response)
 
 quizController.post('/upload', checkToken, function(request, response)
 {
+    console.log(request.body);
+    const { setname }=request.body;
     if(request.files==null)
 	{
 		return response.status(400).json({msg:'no file upload'});
 	}
-	const file=request.files.file;
-	file.mv(`/media/sankha/New Volume/project/quiz builder/quiz-client/quiz-server/data/${file.name}`, (err)=>{
+    const file=request.files.file;
+    const path="/media/sankha/New Volume1/project/quiz/quiz-client/quiz-server/data";
+	file.mv(`${path}/${file.name}`, (err)=>{
 		if(err)
 		{
 			console.log(err);
 			return response.status(500).send(err);
         }
-        const csvFilePath=`/media/sankha/New Volume/project/quiz builder/quiz-client/quiz-server/data/${file.name}`;
+        const csvFilePath=`${path}/${file.name}`;
         csv()
         .fromFile(csvFilePath)
         .then((json)=>
@@ -52,7 +55,7 @@ quizController.post('/upload', checkToken, function(request, response)
             {
                 console.log(quiz);
                 const { title, m1, m2, m3, m4, right}=quiz;
-                var setQuestionQuery="insert into sets(title, p1, p2, p3, p4, r) values(?,?,?,?,?,?)";
+                var setQuestionQuery=`insert into ${setname}(title, p1, p2, p3, p4, r) values(?,?,?,?,?,?)`;
                 connection.query(setQuestionQuery,[title, m1, m2, m3, m4, right], function(err, result)
                 {
                     if(err)

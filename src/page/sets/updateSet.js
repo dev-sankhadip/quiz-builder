@@ -3,20 +3,24 @@ import fetchApi from '../../fetch/fetch';
 import SelectedSet from './selectedSet';
 
 
+
 const UpdateSet=()=>
 {
     const [questionSet, setQuestionSet]=useState([]);
     const [allQuestions, setAllQuestions]=useState([]);
-    const getResponse=(data)=>
-    {
+    const [isQuesTable, setQuesTable]=useState(false);
+
+    const getResponse=(data)=>{
         setQuestionSet(data.result1);
     }
-    const getSetQuestions=(data)=>
-    {
+    const getSetQuestions=(data)=>{
+        setQuesTable(true);
         setAllQuestions(data.result);
     }
-    const fetchAllSet=()=>
-    {
+    const editQues=(qid, setname)=>{
+        console.log(qid, setname);
+    }
+    const fetchAllSet=()=>{
         const url="http://localhost:3001/admin/sets";
         const options={
             method:"GET",
@@ -26,25 +30,27 @@ const UpdateSet=()=>
         }
         fetchApi(url, options, getResponse);
     }
-    useEffect(()=>
-    {
+    useEffect(()=>{
         fetchAllSet();
+        // eslint-disable-next-line 
     },[])
-    const selectSet=(e)=>
-    {
+    const selectSet=(e)=>{
         const value=e.target.value;
-        const url="http://localhost:3001/admin/selectset";
-        const options={
-            method:"POST",
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({ value })
+        window.sessionStorage.setItem("selectedSet", value);
+        if(value!=="Select Set"){
+            // window.history.pushState(null, "admin",`?set=${value}`);
+            const url="http://localhost:3001/admin/selectset";
+            const options={
+                method:"POST",
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({ value })
+            }
+            fetchApi(url, options, getSetQuestions);
         }
-        fetchApi(url, options, getSetQuestions);
     }
-    const questionSetValue=questionSet.length>0 ? questionSet.map((set, index)=>
-    {
+    const questionSetValue=questionSet.length>0 ? questionSet.map((set, index)=>{
         return(
             <option key={ index }>{ set.table_name }</option>
         )
@@ -59,7 +65,11 @@ const UpdateSet=()=>
                             { questionSetValue }
                         </select>
                     </div>
-                    <SelectedSet allQuestions={allQuestions} />
+                    <SelectedSet 
+                    allQuestions={allQuestions}
+                    isQuesTable={isQuesTable} 
+                    editQues={editQues}
+                    />
                 </div>
             </div>
         </React.Fragment>

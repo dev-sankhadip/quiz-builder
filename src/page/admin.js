@@ -4,7 +4,7 @@ import SetQuestion from './SetQuestion'
 import FileUpload from './fileUpload';
 import fetchApi from '../fetch/fetch';
 import UpdateSet from './sets/updateSet';
-
+import queryString from 'query-string';
 
 
 const Admin=(props)=>
@@ -19,6 +19,7 @@ const Admin=(props)=>
     }
     useEffect(()=>
     {
+        console.log(queryString.parse(props.location.search));
         const url="http://localhost:3001/user/check";
         const options={
             method:"POST",

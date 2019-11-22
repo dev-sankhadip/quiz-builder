@@ -11,10 +11,8 @@ const SetQuestion=()=>
     const [ right, setRight ]=useState('');
     const [ isDisplay, setDisplay ]=useState(false);
     const [setName, setSetName]=useState('');
-    let radio1=useRef();
-    let radio2=useRef();
-    let radio3=useRef();
-    let radio4=useRef();
+    // let radio1=useRef();
+    let form=useRef();
 
     const updateTitle=(e)=>
     {
@@ -40,6 +38,7 @@ const SetQuestion=()=>
     }
     const setRadio=(e)=>
     {
+        console.log(e.target.value);
         setRight(e.target.value);
     }
     const upload=()=>
@@ -57,10 +56,8 @@ const SetQuestion=()=>
         fetchData(url, options)
         .then((res)=>
         {
-            radio1.current.checked=false;
-            radio2.current.checked=false;
-            radio3.current.checked=false;
-            radio4.current.checked=false;
+            form.current.reset();
+            // radio1.current.checked=false;
             setTitle('');
             setRight('');
             setOption({ op1:'', op2:'', op3:'', op4:''});
@@ -117,40 +114,42 @@ const SetQuestion=()=>
                     </div>
                     <div className="col-md-12" style={{ display: isDisplay ? 'inline' : 'none'}}>
                         <p>Set Questins Here</p>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text" id="basic-addon1">Title</span>
+                        <form ref={form}>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text" id="basic-addon1">Title</span>
+                                </div>
+                                <input onChange={updateTitle} type="text" className="form-control" placeholder="Write Questions Here"/>
                             </div>
-                            <input onChange={updateTitle} type="text" className="form-control" placeholder="Write Questions Here"/>
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text" id="basic-addon1">Point 1</span>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text" id="basic-addon1">Point 1</span>
+                                </div>
+                                <input onChange={setOp1} type="text" className="form-control" placeholder="Point 1" aria-label="Username" aria-describedby="basic-addon1"/>
+                                <input type="radio" name="select" className="mt-2 ml-2" value={option.op1} onChange={ setRadio }/>
                             </div>
-                            <input onChange={setOp1} type="text" className="form-control" placeholder="Point 1" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio1} type="radio" className="mt-2 ml-2" value={option.op1} onChange={ setRadio }/>
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text" id="basic-addon1">Point 2</span>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text" id="basic-addon1">Point 2</span>
+                                </div>
+                                <input onChange={setOp2} type="text" className="form-control" placeholder="Point 2" aria-label="Username" aria-describedby="basic-addon1"/>
+                                <input type="radio" name="select" className="mt-2 ml-2" value={option.op2} onChange={ setRadio }/>
                             </div>
-                            <input onChange={setOp2} type="text" className="form-control" placeholder="Point 2" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio2} type="radio" className="mt-2 ml-2" value={option.op2} onChange={ setRadio }/>
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text" id="basic-addon1">Point 3</span>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text" id="basic-addon1">Point 3</span>
+                                </div>
+                                <input onChange={setOp3} type="text" className="form-control" placeholder="Point 3" aria-label="Username" aria-describedby="basic-addon1"/>
+                                <input type="radio" name="select" className="mt-2 ml-2" value={option.op3} onChange={ setRadio }/>
                             </div>
-                            <input onChange={setOp3} type="text" className="form-control" placeholder="Point 3" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio3} type="radio" className="mt-2 ml-2" value={option.op3} onChange={ setRadio }/>
-                        </div>
-                        <div className="input-group mb-3">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text" id="basic-addon1">Point 4</span>
+                            <div className="input-group mb-3">
+                                <div className="input-group-prepend">
+                                    <span className="input-group-text" id="basic-addon1">Point 4</span>
+                                </div>
+                                <input onChange={setOp4} type="text" className="form-control" placeholder="Point 4" aria-label="Username" aria-describedby="basic-addon1"/>
+                                <input type="radio" name="select" className="mt-2 ml-2" value={option.op4} onChange={ setRadio }/>
                             </div>
-                            <input onChange={setOp4} type="text" className="form-control" placeholder="Point 4" aria-label="Username" aria-describedby="basic-addon1"/>
-                            <input ref={radio4} type="radio" className="mt-2 ml-2" value={option.op4} onChange={ setRadio }/>
-                        </div>
+                        </form>
                         <button className="btn btn-sm btn-primary" onClick={upload}>SET</button>
                     </div>
                 </div>
