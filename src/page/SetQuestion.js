@@ -1,5 +1,4 @@
 import React,{ useState, useRef } from 'react'
-import Question from './question';
 import fetchApi from '../fetch/fetch';
 import { fetchData } from '../fetch/newFetch'
 

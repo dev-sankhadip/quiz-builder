@@ -6,11 +6,12 @@ const UserQuestion=(props)=>
     const [questions, setQuestions]=useState([]);
     const [score, setScore]=useState();
     const [loading, setLoading]=useState(false);
-    var arr=[];
+    let arr=[];
     useEffect(()=>
     {
+        const setname=props.match.params.setname;
         const token=window.localStorage.getItem("token");
-        fetch("http://localhost:3001/quiz/ques",{
+        fetch(`http://localhost:3001/quiz/ques/${setname}`,{
             method:"GET",
             headers:{
                 'x-access-token':token
@@ -37,6 +38,7 @@ const UserQuestion=(props)=>
     const SubmitAnswer=()=>
     {
         setLoading(true);
+        const setname=props.match.params.setname;
         const token=window.localStorage.getItem("token");
         fetch('http://localhost:3001/quiz/check',{
             method:"POST",
@@ -44,7 +46,7 @@ const UserQuestion=(props)=>
                 'Content-Type':'application/json',
                 'x-access-token':token
             },
-            body:JSON.stringify({ arr })
+            body:JSON.stringify({ arr, setname })
         })
         .then((res)=>
         {
@@ -88,7 +90,7 @@ const UserQuestion=(props)=>
                     </div>
                     <div className="col-md-6">
                         { loading===true ? <i className="fa fa-spinner fa-spin" style={{ fontSize:24 }}></i> :null }
-                        { score ? <p>Your Score {score}</p> : null }
+                        { score>=0 ? <p>Your Score {score}</p> : null }
                     </div>
                 </div>
             </div>

@@ -78,4 +78,71 @@ setController.post('/selectset', checkToken, function(request, response)
     })
 })
 
+
+setController.get('/get/:qid/:setname', checkToken, function(request, response){
+    const { qid, setname }=request.params;
+    var getQuestionSqlQuery=`select * from ${setname} where qid = ${qid}`;
+    connection.query(getQuestionSqlQuery,(err, result)=>{
+        if(err){
+            response.status(500).send({ code:500, message:"Internal Error" });
+        }
+        if(result.length>0){
+            response.status(200).send({ code:200, result });
+        }
+        else{
+            response.status(400).send({ code:400, message:"Not found" });
+        }
+    })
+})
+
+setController.put('/update', checkToken, function(request, response){
+    const { data:{ title, op1, op2, op3, op4, right }, setname, qid }=request.body;
+    const quesUpdateSqlQuery=`update ${setname} 
+    set title=?,p1=?,p2=?,p3=?,p4=?,r=? where qid=?`;
+    connection.query(quesUpdateSqlQuery,[title, op1, op2, op3, op4, right, qid],function(err, result){
+        if(err){
+            console.log(err);
+        }
+        response.status(200).send({ code:200, message:"Updated" })
+    })
+})
+
+
+setController.get('/result', async function(request, response){
+    const arr=['cuhp', 'kolkata', 'india'];
+    let c=0;
+    var sql="select * from cuhpst2 where qid = ?";
+    for(let i=0;i<arr.length;i++){
+        try{
+            const res=await checkResult(i+1, arr[i]);
+            c++;
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    function checkResult(n, ans){
+        return new Promise((resolve, reject)=>{
+            connection.query(sql,[n], function(err, result){
+                if(err){
+                    console.log(err)
+                }
+                if(result.length>0){
+                    if(result[0].r===ans)
+                    {
+                        console.log("Correct");
+                        resolve();
+                    }
+                }
+            })
+        })
+    }
+    response.send({ c });
+})
+
+// setController.route("/update").options("/update").put("/update", checkToken, function(request, response){
+//     console.log(request.body);
+// })
+
 export default setController;

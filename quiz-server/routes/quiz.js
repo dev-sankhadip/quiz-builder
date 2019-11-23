@@ -76,9 +76,10 @@ quizController.post('/upload', checkToken, function(request, response)
 	})
 })
 
-quizController.get('/ques',checkToken, function(request, response)
+quizController.get('/ques/:setname',checkToken, function(request, response)
 {
-    var getQuizQuery="select * from sets";
+    const { setname }=request.params;
+    var getQuizQuery=`select * from ${setname}`;
     connection.query(getQuizQuery, function(err, result)
     {
         if(err)
@@ -92,35 +93,49 @@ quizController.get('/ques',checkToken, function(request, response)
     })
 })
 
-quizController.post('/check', checkToken, function(request, response)
-{
-    var userScore=0;
-    const { arr }=request.body;
-    for(let i=0;i<arr.length;i++)
-    {
-        if(arr[i]!==null)
-        {
-            var sql="select * from sets where qid = ?";
-            connection.query(sql,[i], function(err, result)
-            {
-                if(err)
-                {
-                    console.log(err);
-                }
-                if(result[0].r===arr[i])
-                {
-                    userScore++;
-                    console.log('right answer');
-                }
-                else
-                {
-                    console.log('wrong anwer');
-                }
-            })
+quizController.post('/check', checkToken, async function(request, response){
+    let userScore=0;
+    const { email }=request.decoded;
+    const { arr, setname }=request.body;
+    const sql=`select * from ${setname} where qid = ?`;
+    const resultSaveSqlQuery="insert into score(user, score, setname) values(?,?,?)";
+    for(let i=0;i<arr.length;i++){
+        if(arr[i]!==null){
+            try{
+                await checkResult(i, arr[i]);
+                userScore++;
+            }catch(err){
+                console.log("wrong answer");
+            }
         }
     }
+
+    function checkResult(qid, ans){
+        return new Promise((resolve, reject)=>{
+            connection.query(sql,[qid], function(err, result){
+                if(err){
+                    console.log(err);
+                }
+                if(result[0].r===ans){
+                    resolve();
+                }else{
+                    reject();
+                }
+            })
+        })
+    }
+    await saveScoreToDatabase(userScore, setname, email);
+    function saveScoreToDatabase(score, sname, id){
+        return new Promise((resolve, reject)=>{
+            connection.query(resultSaveSqlQuery,[id, score, setname], function(err, result){
+                if(err){
+                    console.log(err);
+                }
+                resolve();
+            })
+        })
+    }
     response.send({ code:200, userScore })
-    console.log(userScore);
 })
 
 

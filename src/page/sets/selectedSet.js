@@ -1,14 +1,15 @@
-import React,{ useState } from 'react'
+import React,{  } from 'react'
+import { Link } from 'react-router-dom'
 
 
 const SelectedSet=(props)=>
 {
     const isDisplay=props.isQuesTable;
-    const editQues=(qid,e)=>{
-        console.log(e.target.parentElement);
-        const selectedSetName=window.sessionStorage.getItem("selectedSet");
-        props.editQues(qid, selectedSetName);
-    }
+    // const editQues=(qid,e)=>{
+    //     console.log(e.target.parentElement);
+    //     const selectedSetName=window.sessionStorage.getItem("selectedSet");
+    //     props.editQues(qid, selectedSetName);
+    // }
     const questionView=props.allQuestions.length>0 ? props.allQuestions.map((ques,i)=>{
         return(
             <tr key={i}>
@@ -20,7 +21,9 @@ const SelectedSet=(props)=>
                 <td>{ ques.p4 }</td>
                 <td>{ ques.r }</td>
                 <td>
-                    <button className="btn btn-danger" onClick={(e)=>{ editQues(ques.qid, e) }}>edit</button>
+                    <Link to={'/edit/'+ques.qid}>
+                        <button className="btn btn-danger">edit</button>
+                    </Link>
                 </td>
             </tr>
         )

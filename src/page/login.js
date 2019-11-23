@@ -30,8 +30,9 @@ const Login=(props)=>
             }
             else if(res.code===200 && res.select==="student")
             {
+                const setname=props.match.params.setname;
                 window.localStorage.setItem("token", res.token);
-                props.history.push('/user')
+                props.history.push(`/test/${setname}`);
             }
             else if(res.code===400)
             {
