@@ -27,19 +27,18 @@ const Score=()=>{
     },[])
     const selectSet=(e)=>{
         const value=e.target.value;
-        console.log(value);
         const token=window.localStorage.getItem("token");
         fetch(`http://localhost:3001/quiz/score/${value}`,{
             method:"GET",
             headers:{
-                Accept:'application/json'
+                Accept:'application/json',
+                'x-access-token':token
             }
         })
         .then((res)=>{
             return res.json();
         })
         .then((res)=>{
-            console.log(res);
             setScore(res.result);
         })
         .catch((err)=>{

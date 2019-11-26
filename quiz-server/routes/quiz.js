@@ -94,7 +94,7 @@ quizController.get('/ques/:setname',checkToken, function(request, response)
     })
 })
 
-quizController.get('/score/:setname', function(request, response){
+quizController.get('/score/:setname',checkToken, function(request, response){
     console.log(request.params);
     const { setname }=request.params;
     const getAllScoreSqlQuery=`select * from score where setname = ?`;
