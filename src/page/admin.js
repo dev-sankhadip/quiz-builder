@@ -5,6 +5,7 @@ import FileUpload from './fileUpload';
 import fetchApi from '../fetch/fetch';
 import UpdateSet from './sets/updateSet';
 import queryString from 'query-string';
+import Score from './score/score';
 
 
 const Admin=(props)=>
@@ -39,7 +40,7 @@ const Admin=(props)=>
                 <ul className="nav nav-tabs">
                     <li className="nav-item"><a onClick={()=>{ setUpdateDisplay(false) }} href="#ques" className="nav-link active" data-toggle="tab" id="login-tab">Set Questions</a></li>
                     <li className="nav-item"><a onClick={()=>{ setUpdateDisplay(false) }} href="#file" className="nav-link" data-toggle="tab">Upload CSV File</a></li>
-                    <li className="nav-item"><a onClick={()=>{ setUpdateDisplay(false) }} href="#allques" className="nav-link" data-toggle="tab">Active Sets</a></li>
+                    <li className="nav-item"><a onClick={()=>{ setUpdateDisplay(false) }} href="#allques" className="nav-link" data-toggle="tab">Scores</a></li>
                     <li className="nav-item"><a onClick={()=>{ setUpdateDisplay(true) }} href="#updateset" className="nav-link" data-toggle="tab">Update Set</a></li>
                 </ul>
                 <div className="tab-content" style={{ overflow:'hidden' }}>
@@ -50,7 +51,7 @@ const Admin=(props)=>
                         <FileUpload/>
                     </div>
                     <div className="tab-pane pt-2" id="allques">
-                        
+                        <Score/>
                     </div>
                     <div className="tab-pane pt-2" id="updateset">
                         {updateDisplay ? <UpdateSet/> : null}

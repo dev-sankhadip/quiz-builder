@@ -55,7 +55,11 @@ setController.get('/sets', checkToken, function(request, response)
         else
         {
             var result1=result.filter((res)=>{
-                return res.table_name!=='admin'
+                if(res.table_name==='admin' || res.table_name==='score'){
+                    return false;
+                }
+                return true;
+                // return res.table_name!=='admin'
             })
             response.status(200).send({ code:200, result1 })
         }

@@ -40,13 +40,14 @@ quizController.post('/upload', checkToken, function(request, response)
 	}
     const file=request.files.file;
     const path="/media/sankha/New Volume1/project/quiz/quiz-client/quiz-server/data";
-	file.mv(`${path}/${file.name}`, (err)=>{
+    const path1="/media/sankha/New Volume/project/quiz/quiz-client/quiz-server/data"
+	file.mv(`${path1}/${file.name}`, (err)=>{
 		if(err)
 		{
 			console.log(err);
 			return response.status(500).send(err);
         }
-        const csvFilePath=`${path}/${file.name}`;
+        const csvFilePath=`${path1}/${file.name}`;
         csv()
         .fromFile(csvFilePath)
         .then((json)=>
@@ -92,6 +93,21 @@ quizController.get('/ques/:setname',checkToken, function(request, response)
         }
     })
 })
+
+quizController.get('/score/:setname', function(request, response){
+    console.log(request.params);
+    const { setname }=request.params;
+    const getAllScoreSqlQuery=`select * from score where setname = ?`;
+    connection.query(getAllScoreSqlQuery,[setname],function(err, result){
+        if(err){
+            console.log(err);
+            response.status(500).send({ code:500, message:"Internal Error" });
+        }
+        response.status(200).send({ code:200, result })
+    })
+})
+
+
 
 quizController.post('/check', checkToken, async function(request, response){
     let userScore=0;
